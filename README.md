@@ -25,3 +25,8 @@ Create oauth link with scopes "bot" and "applications.commands" and "Create inst
 Invite bot to your server and paste link in messages_**.json => "invite_url": "LINK_HERE"
 
 Run main.py
+
+
+# Possible Problems and Solutions
+
+- Bot need to see VC to create link
