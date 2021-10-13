@@ -12,8 +12,12 @@ discord-together
 # Installation
 Create a new application on Discord Developer Portal
 Create bot
+
 Copy its token and put it into config.json => "bot_token": "TOKEN_HERE"
+
 Create oauth link with scopes "bot" and "applications.commands" and "Create instant invite" permission
+
 Invite bot to your server and paste link in messages_**.json => "invite_url": "LINK_HERE"
+
 Run main.py
 
