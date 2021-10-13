@@ -1,5 +1,5 @@
 {
-  "bot_token": "ODk3MDA2MTU5OTEzOTc1ODY4.YWPYFg.sFkurOBM73qxBMKMMsA4eucw7x8",
+  "bot_token": "TOKEN_HERE",
   "messages_file": "messages_en.json",
   "embed_color": "0x00ff00",
   "error_embed_color": "0xff0000",
