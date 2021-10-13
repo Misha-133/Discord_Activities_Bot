@@ -3,6 +3,8 @@ Simple discord activities bot. Allows to start activities in your VCs
 
 This bot adds slash commands on your server which allows you to use DiscordTogether Activities
 
+You can use bot I host - https://misha133.ru/activities_bot/
+
 # Requirements 
 Python 3.8+
 discord.py 1.7.3
@@ -20,4 +22,3 @@ Create oauth link with scopes "bot" and "applications.commands" and "Create inst
 Invite bot to your server and paste link in messages_**.json => "invite_url": "LINK_HERE"
 
 Run main.py
-
