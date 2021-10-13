@@ -1,4 +1,10 @@
 {
   "your_link": "Your link",
-  "join_activity": "Join Activity"
+  "join_activity": "Join Activity",
+  "yt_desc": "Start Youtube Together activity",
+  "error_dm": "You can use this commands only in guild text channels",
+  "error_not_in_vc": "You must be in a voice channel to use this command",
+  "int_error": "Internal error",
+  "chess_desc": "Start Chess activity",
+  "config_reload": "Configs reloaded"
 }
