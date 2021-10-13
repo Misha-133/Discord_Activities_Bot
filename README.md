@@ -12,6 +12,8 @@ discord-py-slash-command
 discord-together
 
 # Installation
+Install all needed libs => pip install -r requirements.txt
+
 Create a new application on Discord Developer Portal
 Create bot
 
