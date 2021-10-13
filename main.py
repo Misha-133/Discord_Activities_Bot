@@ -238,4 +238,7 @@ async def on_guild_join(guild: discord.Guild):
 
 if __name__ == '__main__':
     print('Loaded configs, starting bot...')
-    cli.run(config['bot_token'])
+    try:
+        cli.run(config['bot_token'])
+    except discord.LoginFailure:
+        print("Invalid Token")
