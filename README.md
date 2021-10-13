@@ -15,6 +15,7 @@ discord-together
 Install all needed libs => pip install -r requirements.txt
 
 Create a new application on Discord Developer Portal
+
 Create bot
 
 Copy its token and put it into config.json => "bot_token": "TOKEN_HERE"
