@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ActivitiesBot',
-    version='0.0.1',
+    version='0.1.1',
     packages=['discord-py-slash-command', 'discord', 'discord-together'],
     url='',
     license='',
