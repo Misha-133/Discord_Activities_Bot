@@ -13,7 +13,7 @@ messages = {}
 
 
 cli = commands.Bot(command_prefix="//")
-slash = SlashCommand(client=cli, sync_commands=True)
+slash = SlashCommand(client=cli, sync_commands=False)
 togetherControl = DiscordTogether(cli)
 
 print('Loading configs...')
@@ -50,10 +50,17 @@ async def on_ready():
     await updatePresence()
 
 
-@slash.slash(name="reload-config", description="Reload bot config. Some changes will be applied only after restart")
+@slash.slash(name="reload-config", description=messages['reload_desc'])
 async def reload(ctx: discord_slash.SlashContext):
     loadConfigs()
     await ctx.send(embed=discord.Embed(title=messages['config_reload'], color=int(config['embed_color'], 16)))
+
+
+@slash.slash(name="invite-link", description=messages['invite_desc'])
+async def reload(ctx: discord_slash.SlashContext):
+    await ctx.send(embed=discord.Embed(title=messages['invite_emb'], color=int(config['embed_color'], 16)),
+                   hidden=True, components=[create_actionrow(create_button(ButtonStyle.URL, messages['invite_btn'],
+                                                                           url=messages['invite_url']))])
 
 
 @slash.subcommand(base="activity", name="youtube", description=messages['yt_desc'])
@@ -62,7 +69,7 @@ async def youtube(ctx: discord_slash.SlashContext):
     if isinstance(ctx.channel, discord.DMChannel):
         await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
         return
-    elif ctx.author.voice.channel  is None:
+    elif ctx.author.voice is None:
         await ctx.send(embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
         return
     try:
@@ -76,12 +83,12 @@ async def youtube(ctx: discord_slash.SlashContext):
 
 
 @slash.subcommand(base="activity", name="chess", description=messages["chess_desc"])
-async def youtube(ctx: discord_slash.SlashContext):
+async def chess(ctx: discord_slash.SlashContext):
     await ctx.defer()
     if isinstance(ctx.channel, discord.DMChannel):
         await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
         return
-    elif ctx.author.voice.channel is None:
+    elif ctx.author.voice is None:
         await ctx.send(
             embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
         return
@@ -95,7 +102,140 @@ async def youtube(ctx: discord_slash.SlashContext):
         return
 
 
+@slash.subcommand(base="activity", name="poker", description=messages["poker_desc"])
+async def poker(ctx: discord_slash.SlashContext):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "poker", max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+    except:
+        await ctx.send(
+            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        return
+
+
+@slash.subcommand(base="activity", name="betrayal", description=messages["betrayal_desc"])
+async def betrayal(ctx: discord_slash.SlashContext):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "betrayal", max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+    except:
+        await ctx.send(
+            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        return
+
+
+@slash.subcommand(base="activity", name="fishing", description=messages["fishing_desc"])
+async def fishing(ctx: discord_slash.SlashContext):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "fishing",
+                                                 max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[
+                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+    except:
+        await ctx.send(
+            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        return
+
+
+@slash.subcommand(base="activity", name="letter-tile", description=messages["letter-tile_desc"])
+async def letterTile(ctx: discord_slash.SlashContext):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "letter-tile",
+                                                 max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[
+                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+    except:
+        await ctx.send(
+            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        return
+
+
+@slash.subcommand(base="activity", name="word-snack", description=messages["word-snack_desc"])
+async def wordSnack(ctx: discord_slash.SlashContext):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "word-snack",
+                                                 max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[
+                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+    except:
+        await ctx.send(
+            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        return
+
+
+@slash.subcommand(base="activity", name="doodle-crew", description=messages["doodle-crew_desc"])
+async def doodleCrew(ctx: discord_slash.SlashContext):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "doodle-crew",
+                                                 max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[
+                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+    except:
+        await ctx.send(
+            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        return
+
+
+@cli.event
+async def on_guild_join(guild: discord.Guild):
+    print(f'Joined {guild.name}')
+    await updatePresence()
+
+
 if __name__ == '__main__':
     print('Loaded configs, starting bot...')
-
     cli.run(config['bot_token'])
