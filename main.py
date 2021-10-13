@@ -12,7 +12,7 @@ config = {}
 messages = {}
 
 
-cli = commands.Bot(command_prefix="//")
+cli = commands.Bot(command_prefix="/")
 slash = SlashCommand(client=cli, sync_commands=True)
 togetherControl = DiscordTogether(cli)
 
