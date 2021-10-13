@@ -12,7 +12,7 @@
   "invite_desc": "Invite this bot to your server",
   "invite_emb": "Invite this bot to your server",
   "invite_btn": "Invite",
-  "invite_url": "https://discord.com/api/oauth2/authorize?client_id=897006159913975868&permissions=0&scope=bot%20applications.commands",
+  "invite_url": "https://discord.com/api/oauth2/authorize?client_id=897006159913975868&permissions=1&scope=bot%20applications.commands",
   "betrayal_desc": "Start Betrayal activity",
   "fishing_desc": "Start Fishing activity",
   "letter-tile_desc": "Start Letter-Tile activity",
