@@ -30,3 +30,6 @@ Run main.py
 # Possible Problems and Solutions
 
 - Bot need to see VC to create link
+
+- "I've just created my own bot - but there's no commands."
+- Bot uses global slash commands and they take up to 1 hour to register (this is Discord's limitation)
