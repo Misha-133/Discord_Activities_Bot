@@ -41,7 +41,7 @@ loadConfigs()
 
 
 async def updatePresence():
-    await cli.change_presence(activity=discord.Game("Working on " + str(len(cli.guilds)) + "servers"))
+    await cli.change_presence(activity=discord.Game("Working on " + str(len(cli.guilds)) + " servers"))
 
 
 @cli.event
