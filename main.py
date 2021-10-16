@@ -1,3 +1,4 @@
+import datetime
 import discord_slash
 from discord.ext import commands
 from discord_slash.model import ButtonStyle
@@ -6,6 +7,7 @@ from discordTogether import DiscordTogether
 from discord_slash import SlashCommand
 import discord
 import json
+import os
 
 
 config = {}
@@ -13,10 +15,12 @@ messages = {}
 
 
 cli = commands.Bot(command_prefix="/")
-slash = SlashCommand(client=cli, sync_commands=True)
+slash = SlashCommand(client=cli, sync_commands=False)
 togetherControl = DiscordTogether(cli)
 
 print('Loading configs...')
+started = datetime.datetime.now()
+
 
 def loadConfigs():
     global messages
@@ -26,18 +30,24 @@ def loadConfigs():
         with open("config.json", mode="r", encoding="utf8") as file:
             config = json.load(file)
     except FileNotFoundError:
-        print("Config file not found.")
+        log("Config file not found.")
         exit("Critical error")
 
     try:
         with open(config['messages_file'], mode="r", encoding="utf8") as file:
             messages = json.load(file)
     except FileNotFoundError:
-        print("Messages file not found.")
+        log("Messages file not found.")
         exit("Critical error")
 
 
 loadConfigs()
+
+
+def log(*args):
+    print(f"[{datetime.datetime.now().strftime('%m.%d.%Y %H:%M:%S')}]", *args)
+    with open(f"logs/log_{started.strftime('%m-%d-%Y;%H-%M')}.txt", mode="a", encoding="utf8") as file:
+        print(f"[{datetime.datetime.now().strftime('%m.%d.%Y %H:%M:%S')}]", *args, file=file)
 
 
 async def updatePresence():
@@ -46,7 +56,7 @@ async def updatePresence():
 
 @cli.event
 async def on_ready():
-    print(f"Logged into {cli.user}")
+    log(f"Logged into {cli.user}")
     await updatePresence()
 
 
@@ -76,9 +86,11 @@ async def youtube(ctx: discord_slash.SlashContext):
         link = await togetherControl.create_link(ctx.author.voice.channel.id, "youtube", max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
         await ctx.send(
             embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -96,9 +108,10 @@ async def chess(ctx: discord_slash.SlashContext):
         link = await togetherControl.create_link(ctx.author.voice.channel.id, "chess", max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -116,9 +129,10 @@ async def poker(ctx: discord_slash.SlashContext):
         link = await togetherControl.create_link(ctx.author.voice.channel.id, "poker", max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -136,9 +150,10 @@ async def betrayal(ctx: discord_slash.SlashContext):
         link = await togetherControl.create_link(ctx.author.voice.channel.id, "betrayal", max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -156,11 +171,11 @@ async def fishing(ctx: discord_slash.SlashContext):
         link = await togetherControl.create_link(ctx.author.voice.channel.id, "fishing",
                                                  max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[
-                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -178,11 +193,11 @@ async def letterTile(ctx: discord_slash.SlashContext):
         link = await togetherControl.create_link(ctx.author.voice.channel.id, "letter-tile",
                                                  max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[
-                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -202,9 +217,10 @@ async def wordSnack(ctx: discord_slash.SlashContext):
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[
                            create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
@@ -224,21 +240,30 @@ async def doodleCrew(ctx: discord_slash.SlashContext):
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[
                            create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-    except:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
         return
 
 
 @cli.event
 async def on_guild_join(guild: discord.Guild):
-    print(f'Joined {guild.name}')
+    log(f'Joined {guild.name}')
+    await updatePresence()
+
+
+@cli.event
+async def on_guild_remove(guild: discord.Guild):
+    log(f'Removed from {guild.name}')
     await updatePresence()
 
 
 if __name__ == '__main__':
-    print('Loaded configs, starting bot...')
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+    log('Loaded configs, starting bot...')
     try:
         cli.run(config['bot_token'])
     except discord.LoginFailure:
-        print("Invalid Token")
+        log("Invalid Token")
