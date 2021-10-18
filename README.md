@@ -32,7 +32,9 @@ Run main.py
 
 # Possible Problems and Solutions
 - "Bot works everywhere except one channel"
+- 
 Bot need to see VC to create link, so probably it can't see that channel
 
 - "I've just created my own bot - but there's no commands."
+- 
 Bot uses global slash commands and they take up to 1 hour to register (this is Discord's limitation)
