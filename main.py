@@ -44,6 +44,28 @@ def loadConfigs():
 loadConfigs()
 
 
+async def createActivityLink(ctx: discord_slash.SlashContext, activity: str):
+    await ctx.defer()
+    if isinstance(ctx.channel, discord.DMChannel):
+        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
+        return
+    elif ctx.author.voice is None:
+        await ctx.send(
+            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
+        return
+    try:
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, "chess",
+                                                 max_age=int(config['link_duration']))
+        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+                       components=[
+                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+    except Exception as ex:
+        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
+        log(ex)
+        return
+
+
 def log(*args):
     print(f"[{datetime.datetime.now().strftime('%m.%d.%Y %H:%M:%S')}]", *args)
     with open(f"logs/log_{started.strftime('%m-%d-%Y;%H-%M')}.txt", mode="a", encoding="utf8") as file:
@@ -75,176 +97,42 @@ async def reload(ctx: discord_slash.SlashContext):
 
 @slash.subcommand(base="activity", name="youtube", description=messages['yt_desc'])
 async def youtube(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "youtube", max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(
-            embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, 'youtube')
 
 
 @slash.subcommand(base="activity", name="chess", description=messages["chess_desc"])
 async def chess(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "chess", max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "chess")
 
 
 @slash.subcommand(base="activity", name="poker", description=messages["poker_desc"])
 async def poker(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "poker", max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "poker")
 
 
 @slash.subcommand(base="activity", name="betrayal", description=messages["betrayal_desc"])
 async def betrayal(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "betrayal", max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "betrayal")
 
 
 @slash.subcommand(base="activity", name="fishing", description=messages["fishing_desc"])
 async def fishing(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "fishing",
-                                                 max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "fishing")
 
 
 @slash.subcommand(base="activity", name="letter-tile", description=messages["letter-tile_desc"])
 async def letterTile(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "letter-tile",
-                                                 max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "letter-tile")
 
 
 @slash.subcommand(base="activity", name="word-snack", description=messages["word-snack_desc"])
 async def wordSnack(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "word-snack",
-                                                 max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[
-                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "word-snack")
 
 
 @slash.subcommand(base="activity", name="doodle-crew", description=messages["doodle-crew_desc"])
 async def doodleCrew(ctx: discord_slash.SlashContext):
-    await ctx.defer()
-    if isinstance(ctx.channel, discord.DMChannel):
-        await ctx.send(embed=discord.Embed(title=messages['error_dm'], color=int(config['error_embed_color'], 16)))
-        return
-    elif ctx.author.voice is None:
-        await ctx.send(
-            embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
-        return
-    try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "doodle-crew",
-                                                 max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
-                       components=[
-                           create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
-    except Exception as ex:
-        await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
-        log(ex)
-        return
+    await createActivityLink(ctx, "doodle-crew")
 
 
 @cli.event
