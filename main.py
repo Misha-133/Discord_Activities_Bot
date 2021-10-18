@@ -54,7 +54,7 @@ async def createActivityLink(ctx: discord_slash.SlashContext, activity: str):
             embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
         return
     try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, "chess",
+        link = await togetherControl.create_link(ctx.author.voice.channel.id, activity,
                                                  max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[
