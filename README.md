@@ -7,8 +7,11 @@ You can use bot I host - https://misha133.ru/activities_bot/
 
 # Requirements 
 Python 3.8+
+
 discord.py 1.7.3
+
 discord-py-slash-command
+
 discord-together
 
 # Installation
