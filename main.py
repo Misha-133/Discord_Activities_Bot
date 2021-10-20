@@ -3,7 +3,7 @@ import discord_slash
 from discord.ext import commands
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import create_button, create_actionrow
-from discordTogether import DiscordTogether
+from discord_together import DiscordTogether
 from discord_slash import SlashCommand
 import discord
 import json
@@ -14,9 +14,9 @@ config = {}
 messages = {}
 
 
-cli = commands.Bot(command_prefix="/")
+cli = commands.Bot(command_prefix="//")
 slash = SlashCommand(client=cli, sync_commands=True)
-togetherControl = DiscordTogether(cli)
+
 
 print('Loading configs...')
 started = datetime.datetime.now()
@@ -54,7 +54,7 @@ async def createActivityLink(ctx: discord_slash.SlashContext, activity: str):
             embed=discord.Embed(title=messages['error_not_in_vc'], color=int(config['error_embed_color'], 16)))
         return
     try:
-        link = await togetherControl.create_link(ctx.author.voice.channel.id, activity,
+        link = await disTogether.create_link(ctx.author.voice.channel.id, activity,
                                                  max_age=int(config['link_duration']))
         await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
                        components=[
@@ -78,8 +78,12 @@ async def updatePresence():
 
 @cli.event
 async def on_ready():
+    global disTogether
+
     log(f"Logged into {cli.user}")
     await updatePresence()
+
+    disTogether = await DiscordTogether(config['bot_token'])
 
 
 @slash.slash(name="reload-config", description=messages['reload_desc'])
