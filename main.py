@@ -81,15 +81,20 @@ async def updatePresence():
 
 
 @cli.event
+async def on_connect():
+    global guild_ids
+    guild_ids = [g.id for g in cli.guilds]
+
+
+@cli.event
 async def on_ready():
     global disTogether
-    global guild_ids
 
     log(f"Logged into {cli.user}")
     await updatePresence()
 
     disTogether = await DiscordTogether(config['bot_token'])
-    guild_ids = [g.id for g in cli.guilds]
+    await slash.sync_all_commands(delete_from_unused_guilds=True, delete_perms_from_unused_guilds=True)
 
 
 @slash.slash(name='activity', description="Start DiscordToghether activity", guild_ids=guild_ids,
@@ -112,6 +117,11 @@ async def invite(ctx: discord_slash.SlashContext):
     await ctx.send(embed=discord.Embed(title=messages['invite_emb'], color=int(config['embed_color'], 16)),
                    hidden=True, components=[create_actionrow(create_button(ButtonStyle.URL, messages['invite_btn'],
                                                                            url=messages['invite_url']))])
+
+
+@slash.slash(name="help", description=messages['help-com-desc'], guild_ids=guild_ids)
+async def help(ctx: discord_slash.SlashContext):
+    await ctx.send(embed=discord.Embed(title=messages['help-title'], color=int(config['help-color'], 16), description=messages['help-desc']))
 
 
 @cli.event

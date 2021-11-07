@@ -17,5 +17,9 @@
   "fishing_desc": "Start Fishing activity",
   "letter-tile_desc": "Start Letter-Tile activity",
   "word-snack_desc": "Start Word-Snack activity",
-  "doodle-crew_desc": "Start Doodle-Crew activity"
+  "doodle-crew_desc": "Start Doodle-Crew activity",
+  "help-title": "How to use bot",
+  "help-desc": "Just join VC from Desktop/Web client, type `/activity` and choose one from the list\nThen press `Enter` and click link-button - you've started an activity in your VC. \n\nTo add bot to your server - use command `/invite-link`",
+  "help-color": "0x00ff00",
+  "help-com-desc": "Show bot help"
 }
