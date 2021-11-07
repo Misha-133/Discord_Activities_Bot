@@ -3,15 +3,19 @@ import discord_slash
 from discord.ext import commands
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import create_button, create_actionrow
+from discord_slash.utils.manage_commands import create_permission, add_slash_command, create_choice, create_option
 from discord_together import DiscordTogether
 from discord_slash import SlashCommand
 import discord
 import json
 import os
+from discord_slash.model import SlashCommandPermissionType, SlashCommandOptionType
 
 
 config = {}
 messages = {}
+guild_ids = [814224413062987796]
+activities = {}
 
 
 cli = commands.Bot(command_prefix="//")
@@ -25,19 +29,17 @@ started = datetime.datetime.now()
 def loadConfigs():
     global messages
     global config
+    global activities
 
     try:
         with open("config.json", mode="r", encoding="utf8") as file:
             config = json.load(file)
-    except FileNotFoundError:
-        log("Config file not found.")
-        exit("Critical error")
-
-    try:
+        with open("activities.json", mode="r", encoding="utf8") as file:
+            activities = json.load(file)
         with open(config['messages_file'], mode="r", encoding="utf8") as file:
             messages = json.load(file)
     except FileNotFoundError:
-        log("Messages file not found.")
+        log("Config file not found.")
         exit("Critical error")
 
 
@@ -56,10 +58,12 @@ async def createActivityLink(ctx: discord_slash.SlashContext, activity: str):
     try:
         link = await disTogether.create_link(ctx.author.voice.channel.id, activity,
                                                  max_age=int(config['link_duration']))
-        await ctx.send(embed=discord.Embed(title=messages['your_link'], color=int(config['embed_color'], 16)),
+        await ctx.send(embed=discord.Embed(title=messages['your_activity'],
+                                           description='`' + activities[activity] + '`',
+                                           color=int(config['embed_color'], 16)),
                        components=[
                            create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name}")
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name} - {activity}")
     except Exception as ex:
         await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
         log(ex)
@@ -79,64 +83,35 @@ async def updatePresence():
 @cli.event
 async def on_ready():
     global disTogether
+    global guild_ids
 
     log(f"Logged into {cli.user}")
     await updatePresence()
 
     disTogether = await DiscordTogether(config['bot_token'])
+    guild_ids = [g.id for g in cli.guilds]
 
 
-@slash.slash(name="reload-config", description=messages['reload_desc'])
+@slash.slash(name='activity', description="Start DiscordToghether activity", guild_ids=guild_ids,
+             options=[create_option(name="activity", description="Choose activity", option_type=SlashCommandOptionType.STRING, required=True,
+                                    choices=[create_choice(act, activities[act]) for act in activities.keys()])])
+async def aboba(ctx: discord_slash.SlashContext, activity: str):
+    await createActivityLink(ctx, activity)
+
+
+@slash.slash(name="reload-config", description=messages['reload_desc'],
+             permissions={config['admin_guild_id']: [create_permission(config['admin_id'], SlashCommandPermissionType.USER, True)]},
+             guild_ids=[int(config['admin_guild_id'])])
 async def reload(ctx: discord_slash.SlashContext):
     loadConfigs()
     await ctx.send(embed=discord.Embed(title=messages['config_reload'], color=int(config['embed_color'], 16)))
 
 
-@slash.slash(name="invite-link", description=messages['invite_desc'])
-async def reload(ctx: discord_slash.SlashContext):
+@slash.slash(name="invite-link", description=messages['invite_desc'], guild_ids=guild_ids)
+async def invite(ctx: discord_slash.SlashContext):
     await ctx.send(embed=discord.Embed(title=messages['invite_emb'], color=int(config['embed_color'], 16)),
                    hidden=True, components=[create_actionrow(create_button(ButtonStyle.URL, messages['invite_btn'],
                                                                            url=messages['invite_url']))])
-
-
-@slash.subcommand(base="activity", name="youtube", description=messages['yt_desc'])
-async def youtube(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, 'youtube')
-
-
-@slash.subcommand(base="activity", name="chess", description=messages["chess_desc"])
-async def chess(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "chess")
-
-
-@slash.subcommand(base="activity", name="poker", description=messages["poker_desc"])
-async def poker(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "poker")
-
-
-@slash.subcommand(base="activity", name="betrayal", description=messages["betrayal_desc"])
-async def betrayal(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "betrayal")
-
-
-@slash.subcommand(base="activity", name="fishing", description=messages["fishing_desc"])
-async def fishing(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "fishing")
-
-
-@slash.subcommand(base="activity", name="letter-tile", description=messages["letter-tile_desc"])
-async def letterTile(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "letter-tile")
-
-
-@slash.subcommand(base="activity", name="word-snack", description=messages["word-snack_desc"])
-async def wordSnack(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "word-snack")
-
-
-@slash.subcommand(base="activity", name="doodle-crew", description=messages["doodle-crew_desc"])
-async def doodleCrew(ctx: discord_slash.SlashContext):
-    await createActivityLink(ctx, "doodle-crew")
 
 
 @cli.event

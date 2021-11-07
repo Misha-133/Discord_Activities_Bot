@@ -1,6 +1,6 @@
 {
-  "your_link": "Your link",
-  "join_activity": "Join Activity",
+  "your_activity": "Your Activity",
+  "join_activity": "Join",
   "yt_desc": "Start Youtube Together activity",
   "error_dm": "You can use this commands only in guild text channels",
   "error_not_in_vc": "You must be in a voice channel to use this command",
