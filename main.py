@@ -121,7 +121,7 @@ async def invite(ctx: discord_slash.SlashContext):
 
 @slash.slash(name="help", description=messages['help-com-desc'], guild_ids=guild_ids)
 async def help(ctx: discord_slash.SlashContext):
-    await ctx.send(embed=discord.Embed(title=messages['help-title'], color=int(config['help-color'], 16), description=messages['help-desc']))
+    await ctx.send(embed=discord.Embed(title=messages['help-title'], color=int(messages['help-color'], 16), description=messages['help-desc']))
 
 
 @cli.event
