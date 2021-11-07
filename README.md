@@ -12,7 +12,7 @@ discord.py 1.7.3
 
 discord-py-slash-command
 
-discord-together
+discord_together
 
 # Installation
 Install all needed libs => pip install -r requirements.txt
