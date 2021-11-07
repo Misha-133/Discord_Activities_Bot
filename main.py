@@ -14,7 +14,7 @@ from discord_slash.model import SlashCommandPermissionType, SlashCommandOptionTy
 
 config = {}
 messages = {}
-guild_ids = [814224413062987796]
+guild_ids = []
 activities = {}
 
 
