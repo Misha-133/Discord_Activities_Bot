@@ -97,7 +97,7 @@ async def on_ready():
     await slash.sync_all_commands(delete_from_unused_guilds=True, delete_perms_from_unused_guilds=True)
 
 
-@slash.slash(name='activity', description="Start DiscordToghether activity", guild_ids=guild_ids,
+@slash.slash(name='activity', description=messages['activity_desc'], guild_ids=guild_ids,
              options=[create_option(name="activity", description="Choose activity", option_type=SlashCommandOptionType.STRING, required=True,
                                     choices=[create_choice(act, activities[act]) for act in activities.keys()])])
 async def aboba(ctx: discord_slash.SlashContext, activity: str):
@@ -124,9 +124,17 @@ async def help(ctx: discord_slash.SlashContext):
     await ctx.send(embed=discord.Embed(title=messages['help-title'], color=int(messages['help-color'], 16), description=messages['help-desc']))
 
 
+async def addCommands(guild: discord.Guild):
+    await add_slash_command(cli.user.id, config['bot_token'], guild.id, "activity", messages['activity_desc'],
+                            [create_option(name="activity", description="Choose activity", option_type=SlashCommandOptionType.STRING, required=True,
+                                    choices=[create_choice(act, activities[act]) for act in activities.keys()])])
+    await add_slash_command(cli.user.id, config['bot_token'], guild.id, "help", messages['help-com-desc'])
+
+
 @cli.event
 async def on_guild_join(guild: discord.Guild):
     log(f'Joined {guild.name}')
+    await addCommands(guild)
     await updatePresence()
 
 
