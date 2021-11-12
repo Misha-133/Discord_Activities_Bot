@@ -1,5 +1,6 @@
 import datetime
 import discord_slash
+import discord_together.errors
 from discord.ext import commands
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import create_button, create_actionrow
@@ -19,7 +20,7 @@ activities = {}
 
 
 cli = commands.Bot(command_prefix="//")
-slash = SlashCommand(client=cli, sync_commands=True)
+slash = SlashCommand(client=cli, sync_commands=False)
 
 
 print('Loading configs...')
@@ -63,7 +64,9 @@ async def createActivityLink(ctx: discord_slash.SlashContext, activity: str):
                                            color=int(config['embed_color'], 16)),
                        components=[
                            create_actionrow(create_button(ButtonStyle.URL, messages['join_activity'], url=str(link)))])
-        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name} - {activity}")
+        log(f"{ctx.author} created link {str(link)} on guild {ctx.guild.name} - {activities[activity]}")
+    except discord_together.errors.BotMissingPerms:
+        await ctx.send(embed=discord.Embed(title=messages['missing_perms'], color=int(config['error_embed_color'], 16)))
     except Exception as ex:
         await ctx.send(embed=discord.Embed(title=messages['int_error'], color=int(config['error_embed_color'], 16)))
         log(ex)
