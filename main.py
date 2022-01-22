@@ -97,7 +97,10 @@ async def on_ready():
     await updatePresence()
 
     disTogether = await DiscordTogether(config['bot_token'])
-    await slash.sync_all_commands(delete_from_unused_guilds=True, delete_perms_from_unused_guilds=True)
+    for g in cli.guilds:
+        g: discord.Guild
+        await addCommands(g)
+    log(f"Initialised on {len(cli.guilds)} guilds")
 
 
 @slash.slash(name='activity', description=messages['activity_desc'], guild_ids=guild_ids,
