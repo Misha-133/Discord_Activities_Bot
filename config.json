@@ -5,5 +5,11 @@
   "error_embed_color": "0xff0000",
   "link_duration": "3600",
   "admin_guild_id": 814224413062987796,
-  "admin_id": 394209945513361408
+  "admin_id": 394209945513361408,
+  "command_names":
+          [
+            "activity",
+            "invite",
+            "help"
+          ]
 }
