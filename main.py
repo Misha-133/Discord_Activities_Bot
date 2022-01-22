@@ -4,7 +4,7 @@ import discord_together.errors
 from discord.ext import commands
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import create_button, create_actionrow
-from discord_slash.utils.manage_commands import create_permission, add_slash_command, create_choice, create_option
+from discord_slash.utils.manage_commands import create_permission, add_slash_command, create_choice, create_option, get_all_commands, remove_all_commands_in
 from discord_together import DiscordTogether
 from discord_slash import SlashCommand
 import discord
@@ -99,7 +99,9 @@ async def on_ready():
     disTogether = await DiscordTogether(config['bot_token'])
     for g in cli.guilds:
         g: discord.Guild
+
         await addCommands(g)
+
     log(f"Initialised on {len(cli.guilds)} guilds")
 
 
@@ -131,10 +133,20 @@ async def help(ctx: discord_slash.SlashContext):
 
 
 async def addCommands(guild: discord.Guild):
-    await add_slash_command(cli.user.id, config['bot_token'], guild.id, "activity", messages['activity_desc'],
-                            [create_option(name="activity", description="Choose activity", option_type=SlashCommandOptionType.STRING, required=True,
-                                    choices=[create_choice(act, activities[act]) for act in activities.keys()])])
-    await add_slash_command(cli.user.id, config['bot_token'], guild.id, "help", messages['help-com-desc'])
+    commands = [com['name'] for com in await get_all_commands(cli.user.id, config['bot_token'], guild.id)]
+
+    if [True for com in commands if com not in config['command_names']]:
+        await remove_all_commands_in(cli.user.id, config['bot_token'], guild.id)
+
+        await add_slash_command(cli.user.id, config['bot_token'], guild.id, "activity", messages['activity_desc'],
+                                [create_option(name="activity", description="Choose activity", option_type=SlashCommandOptionType.STRING, required=True,
+                                        choices=[create_choice(act, activities[act]) for act in activities.keys()])])
+
+        await add_slash_command(cli.user.id, config['bot_token'], guild.id, "help", messages['help-com-desc'])
+
+        await add_slash_command(cli.user.id, config['bot_token'], guild.id, "invite", messages["invite_desc"])
+
+        log(f"Synced commands on {guild.name}")
 
 
 @cli.event
