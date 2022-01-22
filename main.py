@@ -135,7 +135,7 @@ async def help(ctx: discord_slash.SlashContext):
 async def addCommands(guild: discord.Guild):
     commands = [com['name'] for com in await get_all_commands(cli.user.id, config['bot_token'], guild.id)]
 
-    if [True for com in commands if com not in config['command_names']]:
+    if [True for name in config['command_names'] if name not in commands]:
         await remove_all_commands_in(cli.user.id, config['bot_token'], guild.id)
 
         await add_slash_command(cli.user.id, config['bot_token'], guild.id, "activity", messages['activity_desc'],
