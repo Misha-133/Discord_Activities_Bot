@@ -133,9 +133,15 @@ async def help(ctx: discord_slash.SlashContext):
 
 
 async def addCommands(guild: discord.Guild):
-    commands = [com['name'] for com in await get_all_commands(cli.user.id, config['bot_token'], guild.id)]
+    commands = await get_all_commands(cli.user.id, config['bot_token'], guild.id)
+    commandNames = [com['name'] for com in commands]
+    choices = None
+    for com in commands:
+        if com['name'] == 'activity':
+            choices = [choice['value'] for choice in com['options'][0]['choices']]
 
-    if [True for name in config['command_names'] if name not in commands]:
+    if [True for name in config['command_names'] if name not in commandNames] or \
+            choices is not None and choices != activities.keys():
         await remove_all_commands_in(cli.user.id, config['bot_token'], guild.id)
 
         await add_slash_command(cli.user.id, config['bot_token'], guild.id, "activity", messages['activity_desc'],
