@@ -141,7 +141,7 @@ async def addCommands(guild: discord.Guild):
             choices = [choice['value'] for choice in com['options'][0]['choices']]
 
     if [True for name in config['command_names'] if name not in commandNames] or \
-            choices is not None and choices != activities.keys():
+            choices is not None and choices != list(activities.keys()):
         await remove_all_commands_in(cli.user.id, config['bot_token'], guild.id)
 
         await add_slash_command(cli.user.id, config['bot_token'], guild.id, "activity", messages['activity_desc'],
